@@ -1,6 +1,7 @@
 import QtQuick
 import QtQuick.Layouts
 import QtQuick.Controls.Basic
+import qt_spotify_app
 
 ApplicationWindow {
     id: window
@@ -44,6 +45,15 @@ ApplicationWindow {
                     Layout.margins: 16
                     horizontalAlignment: Text.AlignHCenter
                     verticalAlignment: Text.AlignVCenter
+                }
+
+                Image {
+                    id: remoteImage
+                    width: 300
+                    height: 300
+                    source: Backend.albumCover
+                    // Keeps aspect ratio intact while fitting the item boundary
+                    fillMode: Image.PreserveAspectFit
                 }
             }
         }

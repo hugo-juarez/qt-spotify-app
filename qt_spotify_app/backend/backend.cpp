@@ -1,5 +1,7 @@
 #include "backend.h"
 #include <QDebug>
+#include <QJsonDocument>
+#include <QJsonObject>
 
 Backend::Backend(QObject *parent)
     : QObject{parent}
@@ -27,4 +29,25 @@ void Backend::onConnected()
 void Backend::onReceived(QString message)
 {
     qDebug() << "Message Received" << message;
+    QJsonObject jsonObj = QJsonDocument::fromJson(message.toUtf8()).object();
+
+    // Check if the mesage is a metadata to change cover album image
+    if(jsonObj.contains("type") && jsonObj["type"] == "metadata") {
+        QUrl url(jsonObj["data"].toObject()["album_cover_url"].toString());
+        setAlbumCover(url);
+    }
+
+}
+
+QUrl Backend::albumCover() const
+{
+    return m_albumCover;
+}
+
+void Backend::setAlbumCover(const QUrl &newAlbumCover)
+{
+    if (m_albumCover == newAlbumCover)
+        return;
+    m_albumCover = newAlbumCover;
+    emit albumCoverChanged();
 }
