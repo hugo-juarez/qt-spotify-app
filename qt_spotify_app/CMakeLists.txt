@@ -21,6 +21,7 @@ qt_add_qml_module(appqt_spotify_app
     URI qt_spotify_app
     QML_FILES
         Main.qml
+        SOURCES backend.h backend.cpp
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.
