@@ -13,8 +13,6 @@ if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/importedcontent/CMakeLists.txt")
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/importedcontent)
 endif()
 
-add_subdirectory(network/)
-
 qt_add_executable(appqt_spotify_app
     main.cpp
 )
@@ -43,7 +41,9 @@ set_target_properties(appqt_spotify_app PROPERTIES
 )
 
 target_link_libraries(appqt_spotify_app
-    PRIVATE Qt6::Quick
+    PRIVATE
+        Qt6::Quick
+        Qt6::WebSockets
 )
 
 install(TARGETS appqt_spotify_app
