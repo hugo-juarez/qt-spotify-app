@@ -1,0 +1,11 @@
+services:
+  daemon:
+    image: ghcr.io/devgianlu/go-librespot
+    network_mode: host
+    volumes:
+      - ./config:/config
+      - ~/.config/pulse/cookie:/pulse_cookie:ro
+      - /run/user/1000/pulse/native:/pulse_native
+    environment:
+      PULSE_SERVER: "unix:/pulse_native"
+      PULSE_COOKIE: "/pulse_cookie"

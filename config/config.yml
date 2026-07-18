@@ -1,0 +1,12 @@
+device_name: 'Dev Speaker'
+audio_backend: pulseaudio
+
+server:
+  enabled: true
+  address: localhost
+  port: 3678
+
+credentials:
+  type: zeroconf
+  zeroconf:
+    persist_credentials: true
