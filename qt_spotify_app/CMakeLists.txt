@@ -4,14 +4,14 @@ project(qt_spotify_app VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick)
-
 qt_standard_project_setup(REQUIRES 6.10)
 
 # Content of downloaded design from Figma to Qt or similar
 if (EXISTS "${CMAKE_CURRENT_LIST_DIR}/importedcontent/CMakeLists.txt")
     add_subdirectory(${CMAKE_CURRENT_LIST_DIR}/importedcontent)
 endif()
+
+add_subdirectory(network/)
 
 qt_add_executable(appqt_spotify_app
     main.cpp
@@ -20,8 +20,13 @@ qt_add_executable(appqt_spotify_app
 qt_add_qml_module(appqt_spotify_app
     URI qt_spotify_app
     QML_FILES
-        Main.qml
-        SOURCES backend.h backend.cpp
+        qml/Main.qml
+        SOURCES backend/backend.h backend/backend.cpp
+)
+
+target_include_directories(appqt_spotify_app
+    PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/backend
 )
 
 # Qt for iOS sets MACOSX_BUNDLE_GUI_IDENTIFIER automatically since Qt 6.1.

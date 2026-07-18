@@ -4,12 +4,12 @@
 #include <QObject>
 #include <QQmlEngine>
 
-class backend : public QObject
+class Backend : public QObject
 {
     Q_OBJECT
     QML_ELEMENT
 public:
-    explicit backend(QObject *parent = nullptr);
+    explicit Backend(QObject *parent = nullptr);
 
 signals:
 };

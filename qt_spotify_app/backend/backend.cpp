@@ -1,5 +1,5 @@
 #include "backend.h"
 
-backend::backend(QObject *parent)
+Backend::Backend(QObject *parent)
     : QObject{parent}
 {}
