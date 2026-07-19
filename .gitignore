@@ -1,6 +1,8 @@
 config/lockfile
 config/state.json
 
+assets/
+
 # C++ objects and libs
 *.slo
 *.lo

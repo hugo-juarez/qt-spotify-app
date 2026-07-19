@@ -5,8 +5,9 @@ import qt_spotify_app
 
 ApplicationWindow {
     id: window
-    width: 640
-    height: 480
+    width: 1280
+    height: 720
+    //visibility: Window.FullScreen
     minimumWidth: 200
     minimumHeight: 250
     visible: true
@@ -17,6 +18,24 @@ ApplicationWindow {
     property color reallyLight: "#e7e7e7"
     property color light: "#e0e0e0"
 
+    AnimatedImage {
+        id: backgroundImage
+        anchors.fill: parent
+        source: "qrc:/qt/qml/qt_spotify_app/assets/background.gif" // Path to your GIF
+        cache: false                     // Recommended for performance
+        fillMode: Image.PreserveAspectCrop
+        onCurrentFrameChanged: {
+            if (currentFrame === frameCount - 1) {
+                // reached the last frame — loop manually
+                currentFrame = 0;
+            }
+        }
+        onStatusChanged: {
+            if (status === AnimatedImage.Ready)
+                console.warn("frameCount =", frameCount);
+        }
+    }
+
     GridLayout {
         id: grid
         columns: width < 400 ? 1 : 2
@@ -26,7 +45,7 @@ ApplicationWindow {
 
         Rectangle {
             id: rectangle1
-            color: window.lightMode ? window.reallyLight : window.reallyDark
+            color: "transparent"
             Layout.fillHeight: true
             Layout.fillWidth: true
 
@@ -60,7 +79,7 @@ ApplicationWindow {
 
         Rectangle {
             id: rectangle2
-            color: window.lightMode ? window.light : window.dark
+            color: "transparent"
             Layout.fillHeight: true
             Layout.fillWidth: true
 
