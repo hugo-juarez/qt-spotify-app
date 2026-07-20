@@ -89,13 +89,7 @@ ApplicationWindow {
                 }
 
                 ProgressBar {
-                    id: progress
-                    Layout.fillWidth: true
-                    from: 0
-                    to: 100
-                    value: 45
-                    Layout.alignment: Qt.AlignHCenter
-                                      | Qt.AlignVCenter // Sets the current progress to 45%
+                    id: progressBar
                 }
 
                 RowLayout {

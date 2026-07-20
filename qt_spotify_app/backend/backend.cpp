@@ -6,9 +6,8 @@
 
 Backend::Backend(QObject *parent)
     : QObject{parent},
-    m_albumCover{},
-    m_songName{"Loading..."},
-    m_artists{""}
+    m_playerTracker{new PlayerTracker(this)},
+    m_songName{"Loading..."}
 {
     qDebug("Initialized Backend");
     QUrl url{"ws://localhost:3678/events"};
@@ -35,8 +34,11 @@ void Backend::onReceived(QString message)
     qDebug() << "Message Received" << message;
     QJsonObject jsonObj = QJsonDocument::fromJson(message.toUtf8()).object();
 
+    if(!jsonObj.contains("type"))
+        return;
+
     // Check if the mesage is a metadata to change cover album image
-    if(jsonObj.contains("type") && jsonObj["type"] == "metadata") {
+    if( jsonObj["type"] == "metadata") {
         QJsonObject data = jsonObj["data"].toObject();
         setAlbumCover(QUrl(data["album_cover_url"].toString()));
         setSongName(data["name"].toString());
@@ -50,8 +52,15 @@ void Backend::onReceived(QString message)
 
         setArtists(artist_list.join(", "));
 
+        m_playerTracker->songChanged(data["duration"].toInt());
     }
 
+    if( jsonObj["type"] == "playing" )
+        m_playerTracker->setPlaying(true);
+
+
+    if ( jsonObj["type"] == "paused" )
+        m_playerTracker->setPlaying(false);
 }
 
 QUrl Backend::albumCover() const

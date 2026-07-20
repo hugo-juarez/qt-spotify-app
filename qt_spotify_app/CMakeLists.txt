@@ -22,6 +22,8 @@ qt_add_qml_module(appqt_spotify_app
     QML_FILES
         qml/Main.qml
         SOURCES backend/backend.h backend/backend.cpp
+        SOURCES backend/playertracker.h backend/playertracker.cpp
+        QML_FILES qml/ProgressBar.qml
 )
 
 target_include_directories(appqt_spotify_app

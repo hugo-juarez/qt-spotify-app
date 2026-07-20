@@ -3,6 +3,7 @@
 
 #include <QObject>
 #include <QtWebSockets/QWebSocket>
+#include "playertracker.h"
 
 class Backend : public QObject
 {
@@ -10,6 +11,7 @@ class Backend : public QObject
     Q_PROPERTY(QUrl albumCover READ albumCover WRITE setAlbumCover NOTIFY albumCoverChanged FINAL)
     Q_PROPERTY(QString songName READ songName WRITE setSongName NOTIFY songNameChanged FINAL)
     Q_PROPERTY(QString artists READ artists WRITE setArtists NOTIFY artistsChanged FINAL)
+    Q_PROPERTY(PlayerTracker *player READ player CONSTANT)
 
 public:
     explicit Backend(QObject *parent = nullptr);
@@ -25,6 +27,8 @@ public:
     QString artists() const;
     void setArtists(const QString &newArtists);
 
+    PlayerTracker *player() const {return m_playerTracker;};
+
 signals:
     void closed();
 
@@ -39,6 +43,7 @@ private slots:
     void onReceived(QString message);
 
 private:
+    PlayerTracker *m_playerTracker;
     QWebSocket m_webSocket;
     QUrl m_albumCover;
     QString m_songName;
