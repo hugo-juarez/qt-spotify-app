@@ -63,6 +63,11 @@ void PlayerTracker::onPlayPause(bool isPlaying)
     setPlaying(isPlaying);
 }
 
+void PlayerTracker::onSeek(int position) {
+    m_position = position;
+    emit positionChanged();
+}
+
 void PlayerTracker::tick()
 {
     m_position += kInterval;

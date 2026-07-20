@@ -61,6 +61,11 @@ void Backend::onReceived(QString message)
 
     if ( jsonObj["type"] == "paused" )
         m_playerTracker->setPlaying(false);
+
+    if ( jsonObj["type"] == "seek") {
+        QJsonObject data = jsonObj["data"].toObject();
+        m_playerTracker->onSeek(data["position"].toInt());
+    }
 }
 
 QUrl Backend::albumCover() const

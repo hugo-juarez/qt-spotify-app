@@ -36,6 +36,7 @@ signals:
 public slots:
     void songChanged(int duration);
     void onPlayPause(bool isPlaying);
+    void onSeek(int position);
 
 private slots:
     void tick();
