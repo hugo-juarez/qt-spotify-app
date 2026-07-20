@@ -5,9 +5,9 @@
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
-    QQmlApplicationEngine engine;
 
     Backend backend;
+    QQmlApplicationEngine engine;
 
     qmlRegisterSingletonInstance("qt_spotify_app", 1, 0, "Backend", &backend);
 

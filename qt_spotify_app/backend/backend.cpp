@@ -2,9 +2,13 @@
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
 
 Backend::Backend(QObject *parent)
-    : QObject{parent}
+    : QObject{parent},
+    m_albumCover{},
+    m_songName{"Loading..."},
+    m_artists{""}
 {
     qDebug("Initialized Backend");
     QUrl url{"ws://localhost:3678/events"};
@@ -33,8 +37,19 @@ void Backend::onReceived(QString message)
 
     // Check if the mesage is a metadata to change cover album image
     if(jsonObj.contains("type") && jsonObj["type"] == "metadata") {
-        QUrl url(jsonObj["data"].toObject()["album_cover_url"].toString());
-        setAlbumCover(url);
+        QJsonObject data = jsonObj["data"].toObject();
+        setAlbumCover(QUrl(data["album_cover_url"].toString()));
+        setSongName(data["name"].toString());
+
+        QJsonArray jsonArray = data["artist_names"].toArray();
+        QStringList artist_list;
+        for(const QJsonValue &value : std::as_const(jsonArray))
+        {
+            artist_list.append(value.toString());
+        }
+
+        setArtists(artist_list.join(", "));
+
     }
 
 }
@@ -50,4 +65,30 @@ void Backend::setAlbumCover(const QUrl &newAlbumCover)
         return;
     m_albumCover = newAlbumCover;
     emit albumCoverChanged();
+}
+
+QString Backend::songName() const
+{
+    return m_songName;
+}
+
+void Backend::setSongName(const QString &newSongName)
+{
+    if (m_songName == newSongName)
+        return;
+    m_songName = newSongName;
+    emit songNameChanged();
+}
+
+QString Backend::artists() const
+{
+    return m_artists;
+}
+
+void Backend::setArtists(const QString &newArtists)
+{
+    if (m_artists == newArtists)
+        return;
+    m_artists = newArtists;
+    emit artistsChanged();
 }
