@@ -22,8 +22,6 @@ qt_add_qml_module(appqt_spotify_app
     QML_FILES
         qml/Main.qml
         SOURCES backend/backend.h backend/backend.cpp
-    RESOURCES
-        assets/background.gif
 )
 
 target_include_directories(appqt_spotify_app

@@ -17,24 +17,8 @@ ApplicationWindow {
     property color dark: "#262626"
     property color reallyLight: "#e7e7e7"
     property color light: "#e0e0e0"
-
-    AnimatedImage {
-        id: backgroundImage
-        anchors.fill: parent
-        source: "qrc:/qt/qml/qt_spotify_app/assets/background.gif" // Path to your GIF
-        cache: false                     // Recommended for performance
-        fillMode: Image.PreserveAspectCrop
-        onCurrentFrameChanged: {
-            if (currentFrame === frameCount - 1) {
-                // reached the last frame — loop manually
-                currentFrame = 0;
-            }
-        }
-        onStatusChanged: {
-            if (status === AnimatedImage.Ready)
-                console.warn("frameCount =", frameCount);
-        }
-    }
+    property color textColor: "#e0e0e0"
+    property bool isLoaded: Backend.albumCover.toString().length !== 0
 
     GridLayout {
         id: grid
@@ -45,41 +29,109 @@ ApplicationWindow {
 
         Rectangle {
             id: rectangle1
-            color: "transparent"
+            color: window.dark
             Layout.fillHeight: true
             Layout.fillWidth: true
 
             ColumnLayout {
-                anchors.fill: parent
+                anchors.centerIn: parent
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
 
                 Label {
-                    id: text1
-                    color: window.lightMode ? window.dark : window.light
-                    font.pixelSize: 120
+                    id: title
+                    color: window.textColor
+                    font.pixelSize: 52
                     fontSizeMode: Text.Fit
-                    text: qsTr("Hello World")
+                    text: qsTr(Backend.songName)
                     Layout.fillWidth: true
                     Layout.fillHeight: true
                     Layout.margins: 16
-                    horizontalAlignment: Text.AlignHCenter
+                    horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
                 }
 
-                Image {
-                    id: remoteImage
+                Item {
                     width: 300
                     height: 300
-                    source: Backend.albumCover
-                    // Keeps aspect ratio intact while fitting the item boundary
-                    fillMode: Image.PreserveAspectFit
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    Image {
+                        id: coverImage
+                        anchors.fill: parent
+                        source: Backend.albumCover
+                        asynchronous: true
+
+                        // Keeps aspect ratio intact while fitting the item boundary
+                        fillMode: Image.PreserveAspectFit
+
+                        visible: (isLoaded && status === Image.Ready)
+                    }
+
+                    BusyIndicator {
+                        id: busyIndicator
+                        anchors.centerIn: parent
+                        running: (!isLoaded || coverImage.status === Image.Loading)
+                        visible: (!isLoaded || coverImage.status === Image.Loading)
+                    }
+                }
+
+                Label {
+                    id: author
+                    color: window.textColor
+                    opacity: 0.75
+                    font.pixelSize: 24
+                    fontSizeMode: Text.Fit
+                    text: qsTr(Backend.artists)
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.margins: 16
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignVCenter
+                }
+
+                ProgressBar {
+                    id: progress
+                    Layout.fillWidth: true
+                    from: 0
+                    to: 100
+                    value: 45
+                    Layout.alignment: Qt.AlignHCenter
+                                      | Qt.AlignVCenter // Sets the current progress to 45%
+                }
+
+                RowLayout {
+                    id: rowLayout
+                    x: 0
+                    y: 480
+                    Layout.topMargin: 20
+                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+
+                    RoundButton {
+                        text: "\u23ee"
+                        implicitWidth: 80
+                        implicitHeight: 40
+                        font.pixelSize: 20
+                    }
+
+                    RoundButton {
+                        text: "\u23f8"
+                        implicitWidth: 80
+                        implicitHeight: 40
+                        font.pixelSize: 20
+                    }
+
+                    RoundButton {
+                        text: "\u23ed"
+                        implicitWidth: 80
+                        implicitHeight: 40
+                        font.pixelSize: 20
+                    }
                 }
             }
         }
 
         Rectangle {
             id: rectangle2
-            color: "transparent"
+            color: window.dark
             Layout.fillHeight: true
             Layout.fillWidth: true
 
