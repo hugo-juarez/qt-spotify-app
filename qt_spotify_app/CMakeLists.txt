@@ -21,9 +21,18 @@ qt_add_qml_module(appqt_spotify_app
     URI qt_spotify_app
     QML_FILES
         qml/Main.qml
-        SOURCES backend/backend.h backend/backend.cpp
-        SOURCES backend/playertracker.h backend/playertracker.cpp
-        QML_FILES qml/ProgressBar.qml
+        qml/ProgressBar.qml
+    SOURCES
+        backend/backend.h backend/backend.cpp
+        backend/playertracker.h backend/playertracker.cpp
+    RESOURCES
+        assets/icons/next.svg
+        assets/icons/pause.svg
+        assets/icons/play.svg
+        assets/icons/previous.svg
+        assets/icons/repeat.svg
+        assets/icons/repeat_one.svg
+        assets/icons/shuffle.svg
 )
 
 target_include_directories(appqt_spotify_app

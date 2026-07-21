@@ -22,7 +22,7 @@ ApplicationWindow {
 
     GridLayout {
         id: grid
-        columns: width < 400 ? 1 : 2
+        columns: 2
         rowSpacing: 0
         columnSpacing: 0
         anchors.fill: parent
@@ -36,89 +36,115 @@ ApplicationWindow {
             ColumnLayout {
                 anchors.centerIn: parent
                 Layout.alignment: Qt.AlignHCenter | Qt.AlignTop
+                width: 450
+                spacing: 12
 
-                Label {
-                    id: title
-                    color: window.textColor
-                    font.pixelSize: 52
-                    fontSizeMode: Text.Fit
-                    text: qsTr(Backend.songName)
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    Layout.margins: 16
-                    horizontalAlignment: Text.AlignLeft
-                    verticalAlignment: Text.AlignVCenter
+                // Static when the text fits, scrolls when it overflows.
+                component MarqueeLabel: Item {
+                    id: marquee
+                    property alias text: label.text
+                    property alias color: label.color
+                    property alias font: label.font
+                    implicitHeight: label.implicitHeight
+                    clip: true      // this is what hides the overflow so it can scroll
+
+                    Text {
+                        id: label
+                        height: parent.height
+                        horizontalAlignment: Text.AlignLeft
+                        verticalAlignment: Text.AlignVCenter
+
+                        readonly property real overshoot: implicitWidth - marquee.width
+                        readonly property bool overflowing: overshoot > 0
+
+                        // reset to the start edge when it no longer needs to scroll
+                        onOverflowingChanged: if (!overflowing) x = 0
+
+                        SequentialAnimation on x {
+                            running: label.overflowing
+                            loops: Animation.Infinite
+                            PauseAnimation { duration: 1200 }
+                            NumberAnimation { to: -label.overshoot
+                                              duration: Math.max(1, label.overshoot) * 18
+                                              easing.type: Easing.InOutQuad }
+                            PauseAnimation { duration: 1200 }
+                            NumberAnimation { to: 0
+                                              duration: Math.max(1, label.overshoot) * 18
+                                              easing.type: Easing.InOutQuad }
+                        }
+                    }
                 }
 
                 Item {
-                    width: 300
-                    height: 300
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    id: coverContainer
+                    Layout.fillWidth: true
+                    Layout.preferredHeight: width      // keeps it square at the content width
+                    Layout.topMargin: 4
+                    Layout.bottomMargin: 4
+
                     Image {
                         id: coverImage
                         anchors.fill: parent
                         source: Backend.albumCover
                         asynchronous: true
-
-                        // Keeps aspect ratio intact while fitting the item boundary
                         fillMode: Image.PreserveAspectFit
-
                         visible: (isLoaded && status === Image.Ready)
                     }
-
                     BusyIndicator {
-                        id: busyIndicator
                         anchors.centerIn: parent
                         running: (!isLoaded || coverImage.status === Image.Loading)
-                        visible: (!isLoaded || coverImage.status === Image.Loading)
+                        visible: running
                     }
                 }
 
-                Label {
-                    id: author
+                MarqueeLabel {
+                    Layout.fillWidth: true
+                    text: qsTr(Backend.songName)
+                    color: window.textColor
+                    font.pixelSize: 40
+                }
+
+                MarqueeLabel {
+                    Layout.fillWidth: true
+                    text: qsTr(Backend.artists)
                     color: window.textColor
                     opacity: 0.75
-                    font.pixelSize: 24
-                    fontSizeMode: Text.Fit
-                    text: qsTr(Backend.artists)
-                    Layout.fillWidth: true
-                    Layout.fillHeight: true
-                    Layout.margins: 16
-                    horizontalAlignment: Text.AlignLeft
-                    verticalAlignment: Text.AlignVCenter
+                    font.pixelSize: 22
                 }
 
                 ProgressBar {
                     id: progressBar
+                    Layout.fillWidth: true
+                    Layout.topMargin: 4
                 }
 
                 RowLayout {
                     id: rowLayout
-                    x: 0
-                    y: 480
-                    Layout.topMargin: 20
-                    Layout.alignment: Qt.AlignHCenter | Qt.AlignVCenter
+                    Layout.fillWidth: true
+                    spacing: 4
+                    readonly property string iconPath: "qrc:/qt/qml/qt_spotify_app/assets/icons/"
 
-                    RoundButton {
-                        text: "\u23ee"
-                        implicitWidth: 80
-                        implicitHeight: 40
-                        font.pixelSize: 20
+                    component MediaButton: RoundButton {
+                        Layout.fillWidth: true     // buttons distribute evenly across the width
+                        implicitWidth: 48
+                        implicitHeight: 44
+                        icon.width: 22
+                        icon.height: 22
+                        icon.color: "white"
                     }
 
-                    RoundButton {
-                        text: "\u23f8"
-                        implicitWidth: 80
-                        implicitHeight: 40
-                        font.pixelSize: 20
+                    MediaButton { icon.source: rowLayout.iconPath + "shuffle.svg" }
+                    MediaButton { icon.source: rowLayout.iconPath + "previous.svg" }
+                    MediaButton {
+                        icon.source: rowLayout.iconPath + "pause.svg"
+                        visible: Backend.player.playing
                     }
-
-                    RoundButton {
-                        text: "\u23ed"
-                        implicitWidth: 80
-                        implicitHeight: 40
-                        font.pixelSize: 20
+                    MediaButton {
+                        icon.source: rowLayout.iconPath + "play.svg"
+                        visible: !Backend.player.playing
                     }
+                    MediaButton { icon.source: rowLayout.iconPath + "next.svg" }
+                    MediaButton { icon.source: rowLayout.iconPath + "repeat.svg" }
                 }
             }
         }
