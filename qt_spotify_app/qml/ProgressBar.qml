@@ -1,17 +1,23 @@
 import QtQuick
-
 Item {
     id: root
     width: 400
     height: 60
 
-    // Helper to format ms as m:ss
+    // Format ms as m:ss, or h:mm:ss when an hour or more
     function formatTime(ms) {
         if (ms < 0) ms = 0
         var totalSeconds = Math.floor(ms / 1000)
-        var minutes = Math.floor(totalSeconds / 60)
+        var hours = Math.floor(totalSeconds / 3600)
+        var minutes = Math.floor((totalSeconds % 3600) / 60)
         var seconds = totalSeconds % 60
-        return minutes + ":" + (seconds < 10 ? "0" : "") + seconds
+
+        function pad(n) { return (n < 10 ? "0" : "") + n }
+
+        if (hours > 0)
+            return hours + ":" + pad(minutes) + ":" + pad(seconds)
+        else
+            return minutes + ":" + pad(seconds)
     }
 
     Column {
@@ -33,7 +39,6 @@ Item {
                 radius: 3
                 color: "#1db954" // Spotify green
 
-                // Smooth the movement between updates
                 Behavior on width {
                     NumberAnimation { duration: 100; easing.type: Easing.Linear }
                 }

@@ -52,7 +52,7 @@ void Backend::onReceived(QString message)
 
         setArtists(artist_list.join(", "));
 
-        m_playerTracker->songChanged(data["duration"].toInt());
+        m_playerTracker->songChanged(data["duration"].toInt(), data["position"].toInt());
     }
 
     if( jsonObj["type"] == "playing" )

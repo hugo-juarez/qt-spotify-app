@@ -51,9 +51,9 @@ qreal PlayerTracker::progress() const
     return m_duration > 0 ? qreal(m_position) / m_duration : 0.0;
 }
 
-void PlayerTracker::songChanged(int duration)
+void PlayerTracker::songChanged(int duration, int position)
 {
-    m_position = 0;
+    m_position = position;
     setDuration(duration);
     emit positionChanged();
 }

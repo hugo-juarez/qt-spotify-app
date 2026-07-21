@@ -34,7 +34,7 @@ signals:
     void playingChanged();
 
 public slots:
-    void songChanged(int duration);
+    void songChanged(int duration, int position);
     void onPlayPause(bool isPlaying);
     void onSeek(int position);
 
