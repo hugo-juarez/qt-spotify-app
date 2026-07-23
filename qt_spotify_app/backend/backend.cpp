@@ -58,7 +58,6 @@ void Backend::onReceived(QString message)
     if( jsonObj["type"] == "playing" )
         m_playerTracker->setPlaying(true);
 
-
     if ( jsonObj["type"] == "paused" )
         m_playerTracker->setPlaying(false);
 

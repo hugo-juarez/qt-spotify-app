@@ -4,7 +4,7 @@ project(qt_spotify_app VERSION 0.1 LANGUAGES CXX)
 
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(Qt6 REQUIRED COMPONENTS Quick WebSockets)
+find_package(Qt6 REQUIRED COMPONENTS Quick WebSockets Network)
 
 qt_standard_project_setup(REQUIRES 6.10)
 
@@ -25,6 +25,7 @@ qt_add_qml_module(appqt_spotify_app
     SOURCES
         backend/backend.h backend/backend.cpp
         backend/playertracker.h backend/playertracker.cpp
+        backend/apiclient.h backend/apiclient.cpp
     RESOURCES
         assets/icons/next.svg
         assets/icons/pause.svg
@@ -55,6 +56,7 @@ target_link_libraries(appqt_spotify_app
     PRIVATE
         Qt6::Quick
         Qt6::WebSockets
+        Qt6::Network
 )
 
 install(TARGETS appqt_spotify_app
