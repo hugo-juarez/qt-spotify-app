@@ -6,7 +6,6 @@ server:
   address: localhost
   port: 3678
 
+zeroconf_enabled: false
 credentials:
-  type: zeroconf
-  zeroconf:
-    persist_credentials: true
+  type: interactive
