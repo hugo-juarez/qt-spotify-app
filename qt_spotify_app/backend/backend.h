@@ -3,7 +3,9 @@
 
 #include <QObject>
 #include <QtWebSockets/QWebSocket>
-#include "playertracker.h"
+#include "ApiClient/apiclient.h"
+#include "PlayerTracker/playertracker.h"
+#include "SpotifyAuth/spotifyauth.h"
 
 class Backend : public QObject
 {
@@ -31,11 +33,8 @@ public:
 
 signals:
     void closed();
-
     void albumCoverChanged();
-
     void songNameChanged();
-
     void artistsChanged();
 
 private slots:
@@ -43,6 +42,8 @@ private slots:
     void onReceived(QString message);
 
 private:
+    SpotifyAuth *m_oauth;
+    ApiClient *m_apiClient;
     PlayerTracker *m_playerTracker;
     QWebSocket m_webSocket;
     QUrl m_albumCover;

@@ -1,5 +1,4 @@
 #include "spotifyauth.h"
-#include <QDesktopServices>
 
 SpotifyAuth::SpotifyAuth(QObject *parent)
     : QObject{parent} ,

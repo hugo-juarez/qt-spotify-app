@@ -2,6 +2,7 @@
 #include <QRestReply>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QSettings>
 
 ApiClient::ApiClient(QUrl url, QObject *parent)
     : QObject{parent},
@@ -16,6 +17,18 @@ ApiClient::ApiClient(QUrl url, QObject *parent)
     );
 
     m_factory.setCommonHeaders(headers);
+}
+
+void ApiClient::getStatus(QJsonObject obj) {
+    get("/status", [&obj](QJsonObject received){
+        return;
+    });
+}
+
+void ApiClient::tokenRefreshed(QString token)
+{
+    QSettings settings("HugoJuarez", "SpotifyQT");
+    settings.setValue("AuthToken", token);
 }
 
 void ApiClient::get(const QString &path, std::function<void(QJsonObject)> callback) {

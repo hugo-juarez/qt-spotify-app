@@ -6,15 +6,23 @@
 
 Backend::Backend(QObject *parent)
     : QObject{parent},
-    m_playerTracker{new PlayerTracker(this)},
+    m_oauth(new SpotifyAuth{this}),
+    m_apiClient(new ApiClient(QUrl("http://localhost:3678/"), this)),
+    m_playerTracker{new PlayerTracker{this}},
     m_songName{"Loading..."}
 {
     qDebug("Initialized Backend");
-    QUrl url{"ws://localhost:3678/events"};
     connect(&m_webSocket, &QWebSocket::connected, this, &Backend::onConnected);
     connect(&m_webSocket, &QWebSocket::disconnected, this, &Backend::closed);
+    m_webSocket.open(QUrl("ws://localhost:3678/events"));
     qDebug("Created Librespot websocket");
-    m_webSocket.open(url);
+
+    QJsonObject obj;
+    m_apiClient->getStatus(obj);
+    qDebug("Created ApiClient");
+
+    qDebug("Started Spotify Auth");
+    m_oauth->startAuth();
 }
 
 void Backend::disconnect()

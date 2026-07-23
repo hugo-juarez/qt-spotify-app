@@ -11,9 +11,12 @@ class ApiClient : public QObject
     Q_OBJECT
 public:
     explicit ApiClient(QUrl url, QObject *parent = nullptr);
+    void getStatus(QJsonObject obj);
+
+public slots:
+    void tokenRefreshed(QString token);
 
 private:
-
     void get(const QString &path, std::function<void(QJsonObject)> callback);
     void post(const QString &path, QJsonDocument doc);
 
